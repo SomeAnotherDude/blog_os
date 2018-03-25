@@ -60,6 +60,15 @@ pub struct Writer {
 }
 
 impl Writer {
+    pub fn new(text: Color, background: Color) -> Self {
+        Writer {
+            col_pos: 0,
+            row_pos: 0,
+            color_code: ColorCode::new(text, background),
+            buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
+        }
+    }
+
     pub fn write_byte(&mut self, byte: u8) {
         match byte {
             b'\n' => self.newline(),
@@ -82,7 +91,9 @@ impl Writer {
     }
 
     pub fn write_string(&mut self, s: &str) {
-        s.bytes().map(|byte| self.write_byte(byte));
+        for byte in s.bytes() {
+            self.write_byte(byte);
+        }
     }
 
     pub fn newline(&mut self) {

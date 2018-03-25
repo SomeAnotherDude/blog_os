@@ -4,9 +4,10 @@
 #![feature(const_fn)]
 
 extern crate volatile;
+extern  crate rlibc;
 
 mod vga_buffer;
-
+use vga_buffer::{Writer, Color};
 
 #[lang = "panic_fmt"]
 #[no_mangle]
@@ -20,21 +21,16 @@ pub extern "C" fn rust_begin_panic(
 }
 
 
-use core::ptr;
+pub fn print_something() {
+    let mut writer = Writer::new(Color::White, Color::Black);
 
-static HELLO: &[u8] = b"Hello World!";
+    writer.write_byte(b'H');
+    writer.write_string("ello");
+}
 
 #[no_mangle]
 pub fn _start() -> ! {
-    let vga_buffer = 0xb8000 as *const u8 as *mut u8;
-
-    for (i, &byte) in HELLO.iter().enumerate() {
-        unsafe {
-            let i = i as isize;
-            ptr::write(vga_buffer.offset(i * 2), byte);
-            ptr::write(vga_buffer.offset(i * 2 + 1), 0xb);
-        }
-    }
+    print_something();
 
     loop {}
 }

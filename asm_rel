@@ -1,0 +1,3 @@
+#!/bin/bash
+./build --release
+objdump -M intel -d ./target/x86_64-blog_os/release/blog_os
