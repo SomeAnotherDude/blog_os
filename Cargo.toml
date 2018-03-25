@@ -1,0 +1,13 @@
+[package]
+name = "blog_os"
+version = "0.1.0"
+authors = ["user <user@example.com>"]
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+
+[dependencies]
+volatile = "0.2.3"
