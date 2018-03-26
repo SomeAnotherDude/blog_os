@@ -1,11 +1,1 @@
-How to reproduce:
-
-1: $ bootimage --target x86_64-blog_os
-2: $ ./run
-
-It will fail.
-
-But if you change step 1 to
-$ bootimage --target x86_64-blog_os --release
-
-Then it runs fine.
+Implementation of https://os.phil-opp.com/second-edition/
