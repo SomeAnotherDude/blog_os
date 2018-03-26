@@ -11,4 +11,11 @@ panic = "abort"
 
 [dependencies]
 volatile = "0.2.3"
-rlibc = "*"
+rlibc = "1.0"
+spin = "*"
+
+
+[dependencies.lazy_static]
+version = "1.0"
+features = ["spin_no_std"]
+

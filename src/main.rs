@@ -4,33 +4,47 @@
 #![feature(const_fn)]
 
 extern crate volatile;
-extern  crate rlibc;
+extern crate spin;
+extern crate rlibc;
+#[macro_use]
+extern crate lazy_static;
 
+#[macro_use]
 mod vga_buffer;
-use vga_buffer::{Writer, Color};
 
 #[lang = "panic_fmt"]
 #[no_mangle]
 pub extern "C" fn rust_begin_panic(
-    _msg: core::fmt::Arguments,
-    _file: &'static str,
-    _line: u32,
-    _column: u32,
+    msg: core::fmt::Arguments,
+    file: &'static str,
+    line: u32,
+    column: u32,
 ) -> ! {
+    use core::fmt::Write;
+    println!("PANIC in file {}:{}:{}", file ,line, column);
+    println!("{}", msg);
     loop {}
 }
 
 
 pub fn print_something() {
-    let mut writer = Writer::new(Color::White, Color::Black);
+    for i in 0..30 {
+        println!("{}", i);
+    }
 
-    writer.write_byte(b'H');
-    writer.write_string("ello");
+    print!("{}", 0);
+    for i in 1..30 {
+        print!(" {}", i);
+    }
+    println!();
+    print!("{}", 1);
+    for i in 2..20 {
+        print!(" {}", i);
+    }
 }
 
 #[no_mangle]
 pub fn _start() -> ! {
     print_something();
-
-    loop {}
+    loop {panic!("Oops...")}
 }

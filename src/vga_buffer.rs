@@ -1,5 +1,6 @@
 use core::fmt;
 use volatile::Volatile;
+use spin::Mutex;
 
 const BUFFER_HEIGHT: usize = 25;
 const BUFFER_WIDTH: usize = 80;
@@ -46,7 +47,6 @@ struct ScreenChar {
 }
 
 
-
 struct Buffer {
     chars: [[Volatile<ScreenChar>; BUFFER_WIDTH]; BUFFER_HEIGHT],
 }
@@ -60,6 +60,8 @@ pub struct Writer {
 }
 
 impl Writer {
+    /// constructor
+    /// cursor position will be at the left-upper corner of screen
     pub fn new(text: Color, background: Color) -> Self {
         Writer {
             col_pos: 0,
@@ -69,6 +71,11 @@ impl Writer {
         }
     }
 
+    /// write a single byte to screen
+    /// the byte will be considered as an ascii character
+    ///
+    /// NOTE: only ascii character are supported,
+    /// any non-ascii ones will be displayed wrong way
     pub fn write_byte(&mut self, byte: u8) {
         match byte {
             b'\n' => self.newline(),
@@ -90,12 +97,20 @@ impl Writer {
         }
     }
 
+    /// write a string to screen
+    /// printing starts from the current cursor's position
+    ///
+    /// NOTE: string will be treated as a sequence of bytes,
+    /// therefore all non-ascii characters will look... strange
     pub fn write_string(&mut self, s: &str) {
         for byte in s.bytes() {
             self.write_byte(byte);
         }
     }
 
+    /// move cursor to beginning of the next row
+    /// if the row is the bottom row then shift all lines up by one row
+    /// (first line will be overwritten) and clear the last (bottom) one
     pub fn newline(&mut self) {
         self.col_pos = 0;
 
@@ -110,15 +125,19 @@ impl Writer {
             }
 
             // blank the last (bottom) row
-            for col in 0..BUFFER_HEIGHT {
-                let row = BUFFER_HEIGHT - 1;
-                let ch = ScreenChar { ascii_character: b' ', color_code: self.color_code };
-
-                self.buffer.chars[row][col].write(ch);
-            }
+            self.clear_rest_of_line();
         }
         else {
             self.row_pos += 1;
+        }
+    }
+
+    /// overwrites all the rest of the current (self.row_pos)
+    /// line (i.e self.col_pos .. BUFFER_WEIGHT) with spaces
+    fn clear_rest_of_line(&mut self) {
+        for col in self.col_pos .. BUFFER_WIDTH {
+            let ch = ScreenChar { ascii_character: b' ', color_code: self.color_code };
+            self.buffer.chars[self.row_pos][col].write(ch);
         }
     }
 }
@@ -130,3 +149,25 @@ impl fmt::Write for Writer {
         Ok(())
     }
 }
+
+lazy_static!{
+    pub static ref VGA_WRITER: Mutex<Writer> = Mutex::new(Writer::new(Color::White, Color::Black));
+}
+
+macro_rules! println {
+    () => (print!("\n"));
+    ($fmt:expr) => (print!(concat!($fmt, "\n")));
+    ($fmt:expr, $($arg:tt)*) => (print!(concat!($fmt, "\n"), $($arg)*));
+}
+
+macro_rules! print {
+    ($($arg:tt)*) => ($crate::vga_buffer::print(format_args!($($arg)*)));
+}
+
+pub fn print(args: fmt::Arguments) {
+    use core::fmt::Write;
+    VGA_WRITER.lock().write_fmt(args).unwrap();
+}
+
+
+
