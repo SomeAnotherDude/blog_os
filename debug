@@ -8,4 +8,6 @@ if [ "$1" == '--release' ]; then
 fi
 
 ./build ${BUILD_FLAGS}
-objdump -M intel -d "${BINARY_PATH}" > ./asm.S
+qemu-system-x86_64 -drive format=raw,file=bootimage.bin -s -S &
+sleep 1
+rust-gdb "${BINARY_PATH}" -iex "add-auto-load-safe-path ./"
