@@ -1,3 +1,7 @@
-
+/.idea/
 /target/
 **/*.rs.bk
+**/*.S
+/bootimage.bin
+/dummy.sh
+/tmp/
