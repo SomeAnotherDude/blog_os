@@ -12,6 +12,7 @@ extern crate lazy_static;
 #[macro_use]
 mod vga_buffer;
 
+
 #[lang = "panic_fmt"]
 #[no_mangle]
 pub extern "C" fn rust_begin_panic(
@@ -37,10 +38,12 @@ pub fn print_something() {
         print!(" {}", i);
     }
     println!();
-    print!("{}", 1);
+
+    print!("{} ", 1);
     for i in 2..20 {
         print!(" {}", i);
     }
+    println!();
 }
 
 #[no_mangle]
