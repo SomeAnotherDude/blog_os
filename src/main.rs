@@ -21,7 +21,6 @@ pub extern "C" fn rust_begin_panic(
     line: u32,
     column: u32,
 ) -> ! {
-    use core::fmt::Write;
     println!("PANIC in file {}:{}:{}", file ,line, column);
     println!("{}", msg);
     loop {}
@@ -29,6 +28,11 @@ pub extern "C" fn rust_begin_panic(
 
 
 pub fn print_something() {
+
+}
+
+#[no_mangle]
+pub fn _start() -> ! {
     for i in 0..30 {
         println!("{}", i);
     }
@@ -44,10 +48,6 @@ pub fn print_something() {
         print!(" {}", i);
     }
     println!();
-}
-
-#[no_mangle]
-pub fn _start() -> ! {
-    print_something();
-    loop {panic!("Oops...")}
+    
+    loop {}
 }
