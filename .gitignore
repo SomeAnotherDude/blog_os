@@ -4,3 +4,4 @@
 **/*.S
 /bootimage.bin
 /dummy.sh
+/tmp/
