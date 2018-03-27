@@ -27,10 +27,6 @@ pub extern "C" fn rust_begin_panic(
 }
 
 
-pub fn print_something() {
-
-}
-
 #[no_mangle]
 pub fn _start() -> ! {
     for i in 0..30 {
@@ -48,6 +44,6 @@ pub fn _start() -> ! {
         print!(" {}", i);
     }
     println!();
-    
+
     loop {}
 }
