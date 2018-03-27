@@ -77,7 +77,7 @@ Technically nothing forces me to use `qemu`, `virtualbox` should be OK,
 but all the scripts use `qemu-x86_64` so
 
 ```bash
-sudo apt install qemu-x86_64 -y
+sudo apt install qemu-x86 -y
 ```
 
 ## How to build

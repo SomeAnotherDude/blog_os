@@ -1,0 +1,20 @@
+#!/bin/bash
+sudo apt install curl -y
+curl https://sh.rustup.rs -sSf -o rustup.sh
+sh ./rustup.sh -y
+rm ./rustup.sh
+
+export PATH="${HOME}/.cargo/bin:${PATH}"
+rustup update nightly
+
+if [ -z `which cc` ]; then 
+	sudo apt install gcc -y
+fi
+
+if [ -z `which make` ]; then 
+	sudo apt install make -y
+fi
+
+cargo install xargo
+cargo install bootimage
+sudo apt install qemu-system-x86 -y
