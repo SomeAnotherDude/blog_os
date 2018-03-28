@@ -17,36 +17,35 @@ This flag builds a project in release mode but preserves debugging symbols.
 
 ## Dependencies
 
+### APT packages
+1. `curl` (`rustup.sh` requires a `curl` command
+   ([this is about to change](https://github.com/rust-lang-nursery/rustup.rs/pull/1373))
+   which is not installed on Ubuntu by default so you have to install it first.)
+2. `make`
+3. `gcc` (truth be told, It requies `cc`, which is typically insatlled by `gcc` package
+   but you might already have it, i.e with `tcc`, `clang`, etc...)
+4. `pkg-config`
+5. `libssl-dev` (or find a package containing a `openssl.pc` file)
+
 ### Rust compiler
 The easiest way is to follow instructions on
 [official site](https://www.rust-lang.org/en-US/install.html).
 It offers you to run an [install bash script](https://sh.rustup.rs):
 
----
-
-**NOTE**: The script requires a `curl` command
-([this is about to change](https://github.com/rust-lang-nursery/rustup.rs/pull/1373))
-which is not installed on Ubuntu by default so you have to install it first.
-
-
-```bash
-$ sudo apt install curl -y
-```
----
-
 ```bash
 $ curl https://sh.rustup.rs -sSf | sh
+$ export PATH="${HOME}/.cargo/bin:${PATH}"
 ```
 
 This command will install a [`rustup`](https://github.com/rust-lang-nursery/rustup.rs/) tool.
+
 We need a nightly channel:
 
 ```bash
 $ rustup update nightly
 ```
 
-and `rust-src`
-
+and `rust-src` component:
 ```bash
 $ rustup component add rust-src
 ```
@@ -80,18 +79,18 @@ but all the scripts use `qemu-x86_64` so
 sudo apt install qemu-x86 -y
 ```
 
-## How to build
+## Build
 
 ```bash
 $ ./build [--release]
 ```
 
-## How to run
+## Run
 ```bash
 $ ./run [--release]
 ```
 
-## How to run under debugger
+## Run under debugger
 ```bash
 $ ./debug [--release]
 ```
