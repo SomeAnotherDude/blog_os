@@ -7,7 +7,7 @@ if [ "$1" == '--release' ]; then
     BINARY_PATH='./target/x86_64-blog_os/release/blog_os'
 fi
 
-./build ${BUILD_FLAGS}
+./build ${BUILD_FLAGS} || exit 1
 qemu-system-x86_64 -drive format=raw,file=bootimage.bin -s -S &
 sleep 1
 rust-gdb "${BINARY_PATH}" -iex "add-auto-load-safe-path ./"
