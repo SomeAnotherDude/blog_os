@@ -12,8 +12,8 @@ panic = "abort"
 [dependencies]
 volatile = "0.2.3"
 rlibc = "1.0"
-spin = "*"
-
+spin = "0.4.7"
+x86_64 = "0.1.2"
 
 [dependencies.lazy_static]
 version = "1.0"

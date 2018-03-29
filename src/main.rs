@@ -2,15 +2,21 @@
 #![no_main]
 #![feature(lang_items)]
 #![feature(const_fn)]
+#![feature(abi_x86_interrupt)]
 
+
+extern crate x86_64;
 extern crate volatile;
 extern crate spin;
 extern crate rlibc;
 #[macro_use]
 extern crate lazy_static;
 
+
 #[macro_use]
 mod vga_buffer;
+mod interrupts;
+
 
 
 #[lang = "panic_fmt"]
@@ -29,6 +35,8 @@ pub extern "C" fn rust_begin_panic(
 
 #[no_mangle]
 pub fn _start() -> ! {
+    interrupts::load_idt();
+
     for i in 0..30 {
         println!("{}", i);
     }
@@ -39,11 +47,15 @@ pub fn _start() -> ! {
     }
     println!();
 
+    x86_64::instructions::interrupts::int3();
+
     print!("{} ", 1);
     for i in 2..20 {
         print!(" {}", i);
     }
     println!();
+
+
 
     loop {}
 }
